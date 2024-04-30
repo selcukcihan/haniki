@@ -30,22 +30,16 @@ import { DialogTrigger, DialogContent, Dialog, DialogClose } from "@/components/
 import Link from "next/link"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { createHabit } from "@/app/actions"
+import { updateHabit } from "@/app/actions"
 import { MountainIcon } from "./icons"
-import { useState, useEffect } from 'react'
+import { Habit } from "../db"
 
-export function CreateHabitDialog({ opened }: { opened: boolean }) {
-  const [isClient, setIsClient] = useState(false)
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
+export function EditHabitDialog({ habit }: { habit: Habit }) {
   return (
-    isClient && <Dialog defaultOpen={opened}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button className="flex items-center gap-2" variant="primary">
-          <PlusIcon className="h-5 w-5" />
-          Create Habit
+        <FileEditIcon className="h-5 w-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-md mx-auto p-4 md:p-10">
@@ -57,15 +51,15 @@ export function CreateHabitDialog({ opened }: { opened: boolean }) {
             </Link>
           </header>
           <main className="flex-1 bg-gray-100 dark:bg-gray-800 p-4 md:p-10 flex items-center justify-center">
-            <form action={(formData: FormData) => createHabit(formData)} >
+            <form action={(formData: FormData) => updateHabit(habit.habitId, formData.get("habitName") as string ) } >
               <div className="space-y-4">
-                <h1 className="text-3xl font-bold">Create New Habit</h1>
+                <h1 className="text-3xl font-bold">Edit habit</h1>
                 <div className="space-y-2">
                   <Label htmlFor="habitName">Habit Name</Label>
-                  <Input id="habitName" minLength={1} type="text" required={true} name="habitName" placeholder="Enter habit name" />
+                  <Input id="habitName" minLength={1} type="text" required={true} name="habitName" placeholder={habit.habitName} />
                 </div>
                 <div className="flex">
-                  <DialogClose type="submit">Create</DialogClose>
+                  <DialogClose type="submit">Update</DialogClose>
                 </div>
               </div>
             </form>
@@ -76,7 +70,7 @@ export function CreateHabitDialog({ opened }: { opened: boolean }) {
   )
 }
 
-function PlusIcon(props) {
+function FileEditIcon(props) {
   return (
     <svg
       {...props}
@@ -90,8 +84,9 @@ function PlusIcon(props) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
+      <path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2h-5.5" />
+      <polyline points="14 2 14 8 20 8" />
+      <path d="M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z" />
     </svg>
   )
 }

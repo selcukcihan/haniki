@@ -23,12 +23,12 @@ To read more about using these font, please visit the Next.js documentation:
 - App Directory: https://nextjs.org/docs/app/building-your-application/optimizing/fonts
 - Pages Directory: https://nextjs.org/docs/pages/building-your-application/optimizing/fonts
 **/
-import { Button } from "@/components/ui/button"
-import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
+
 import { Header } from "@/components/header"
 import { CreateHabitDialog } from "./create-habit-dialog"
 import { Session } from "@auth/core/types"
 import { getHabits, Habit } from "@/db"
+import { HabitCard } from "./habit-card"
 
 export async function Habits({ session }: { session: Session} ) {
   const habits = await getHabits(session.user?.id || '')
@@ -39,25 +39,11 @@ export async function Habits({ session }: { session: Session} ) {
         <div className="max-w-6xl mx-auto grid gap-8">
           <div className="grid md:grid-cols-[1fr_auto] items-center gap-4">
             <h1 className="text-3xl font-bold">Your Habits</h1>
-            <CreateHabitDialog opened={false} userId={session.user?.id || ''}/>
+            <CreateHabitDialog opened={habits.length === 0} />
           </div>
           <div className="grid gap-4">
             {habits.sort((h1, h2) => h1.habitName < h2.habitName ? -1 : 1).map((habit: Habit) => (
-              <Card key={habit.habitId}>
-                <CardHeader>
-                  <CardTitle>{habit.habitName}</CardTitle>
-                  <CardDescription>Some description</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold">60%</div>
-                    <Button size="icon" variant="outline">
-                      <CheckIcon className="h-5 w-5" />
-                      <span className="sr-only">Track habit</span>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <HabitCard habit={habit} key={habit.habitId}/>
             ))}
           </div>
         </div>
@@ -65,23 +51,3 @@ export async function Habits({ session }: { session: Session} ) {
     </div>
   )
 }
-
-function CheckIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  )
-}
-
