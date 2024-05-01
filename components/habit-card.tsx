@@ -24,7 +24,7 @@ export function HabitCard({ habit }: { habit: Habit }) {
       <CardHeader className="flex flex-col items-start justify-between">
         <div>
           <CardTitle>{habit.habitName}</CardTitle>
-          <CardDescription>Work out for 30 minutes every day.</CardDescription>
+          <CardDescription>{habit.habitDescription}</CardDescription>
         </div>
         <div className="flex gap-2">
           <EditHabitDialog habit={habit}/>

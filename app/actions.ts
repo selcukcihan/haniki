@@ -7,7 +7,7 @@ import { auth } from '@/auth'
 export async function createHabit(formData: FormData) {
   const session = await auth()
   if (session) {
-    await create(session.user?.id || '', formData.get("habitName") as string)
+    await create(session.user?.id || '', formData.get("habitName") as string, formData.get("habitDescription") as string)
   }
   redirect('/')
 }

@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand, DynamoDBDocumentClient, QueryCommand, DeleteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, DynamoDBDocumentClient, QueryCommand, DeleteCommand, UpdateCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from 'uuid'
 
 const client = new DynamoDBClient({});
@@ -8,6 +8,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 export interface Habit {
   habitId: string;
   habitName: string;
+  habitDescription?: string;
   logs?: string[];
 }
 
@@ -26,7 +27,7 @@ export const logHabit = async (userId: string, habitId: string) => {
   return response
 }
 
-export const getLogs = async (userId: string, habitId: string) => {
+export const getLogsFull = async (userId: string, habitId: string) => {
   const command = new QueryCommand({
     TableName: process.env.DYNAMODB_TABLE_NAME || '',
     KeyConditionExpression: "pk = :pk and begins_with(sk, :sk)",
@@ -38,10 +39,15 @@ export const getLogs = async (userId: string, habitId: string) => {
   })
 
   const response = await docClient.send(command)
-  return (response.Items || []).map((item) => (item.logDate as string))
+  return (response.Items || [])
 }
 
-export const createHabit = async (userId: string, habitName: string) => {
+export const getLogs = async (userId: string, habitId: string) => {
+  const logs = await getLogsFull(userId, habitId)
+  return logs.map((item) => (item.logDate as string))
+}
+
+export const createHabit = async (userId: string, habitName: string, habitDescription?: string) => {
   const habitId = uuidv4()
   const command = new PutCommand({
     TableName: process.env.DYNAMODB_TABLE_NAME || '',
@@ -49,6 +55,7 @@ export const createHabit = async (userId: string, habitName: string) => {
       pk: `USER#${userId}`,
       sk: `HABIT#${habitId}`,
       habitName,
+      habitDescription,
       habitId,
     },
   })
@@ -58,16 +65,30 @@ export const createHabit = async (userId: string, habitName: string) => {
 }
 
 export const deleteHabit = async (userId: string, habitId: string) => {
-  const command = new DeleteCommand({
-    TableName: process.env.DYNAMODB_TABLE_NAME || '',
-    Key: {
-      pk: `USER#${userId}`,
-      sk: `HABIT#${habitId}`,
+  const logs = await getLogsFull(userId, habitId)
+  const requests = logs.map((item) => ({
+    DeleteRequest: {
+      Key: {
+        pk: item.pk,
+        sk: item.sk,
+      },
     },
-  });
+  }))
+  requests.push({
+    DeleteRequest: {
+      Key: {
+        pk: `USER#${userId}`,
+        sk: `HABIT#${habitId}`,
+      },
+    },
+  })
+  const command = new BatchWriteCommand({
+    RequestItems: {
+      [process.env.DYNAMODB_TABLE_NAME || '']: requests,
+    },
+  })
 
-  const response = await docClient.send(command)
-  return response
+  await docClient.send(command)
 }
 
 export const updateHabit = async (userId: string, habitId: string, habitName: string) => {
@@ -102,6 +123,7 @@ export const getHabits = async (userId: string) => {
   const habits = (response.Items || []).map((item) => ({
     habitId: item.habitId,
     habitName: item.habitName,
+    habitDescription: item.habitDescription,
   } as Habit))
   await Promise.all(habits.map(async (habit) => {
     habit.logs = await getLogs(userId, habit.habitId)

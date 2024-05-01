@@ -45,7 +45,7 @@ export function CreateHabitDialog({ opened }: { opened: boolean }) {
       <DialogTrigger asChild>
         <Button className="flex items-center gap-2" variant="primary">
           <PlusIcon className="h-5 w-5" />
-          Create Habit
+          New Habit
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-md mx-auto p-4 md:p-10">
@@ -63,6 +63,10 @@ export function CreateHabitDialog({ opened }: { opened: boolean }) {
                 <div className="space-y-2">
                   <Label htmlFor="habitName">Habit Name</Label>
                   <Input id="habitName" minLength={1} type="text" required={true} name="habitName" placeholder="Enter habit name" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="habitDescription">Description</Label>
+                  <Input id="habitDescription" type="text" required={true} name="habitDescription" placeholder="Describe your habit" />
                 </div>
                 <div className="flex">
                   <DialogClose type="submit">Create</DialogClose>
