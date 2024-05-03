@@ -29,9 +29,42 @@ import { CreateHabitDialog } from "./create-habit-dialog"
 import { Session } from "@auth/core/types"
 import { getHabits, Habit } from "@/db"
 import { HabitCard } from "./habit-card"
+import { NewHabitCard, HabitProps } from "./new-habit-card"
+
+const calculateLast30DaysCount = (logs: string[]) => {
+  const last30Days = new Date()
+  last30Days.setDate(last30Days.getDate() - 30)
+  return logs.filter((log) => new Date(log) > last30Days).length
+}
+
+const calculateMonthlyCounts = (logs: string[]) => {
+  const monthlyCounts: { name: string, count: number }[] = []
+  const today = new Date()
+  let month = today.getMonth()
+  let year = today.getFullYear()
+  for (let i = 0; i < 6; i++) {
+    const monthLogs = logs.filter((log) => {
+      const logDate = new Date(log)
+      return logDate.getMonth() === month && logDate.getFullYear() === year
+    })
+    monthlyCounts.push({ name: `${month + 1}/${year}`, count: monthLogs.length })
+    month--
+    if (month < 0) {
+      month = 11
+      year--
+    }
+  }
+  return monthlyCounts
+}
 
 export async function Habits({ session }: { session: Session} ) {
   const habits = await getHabits(session.user?.id || '')
+  const habitProps = habits.map((habit: Habit) => ({
+    habitName: habit.habitName,
+    habitDescription: habit.habitDescription,
+    last30DaysCount: calculateLast30DaysCount(habit.logs || []),
+    monthlyCounts: calculateMonthlyCounts(habit.logs || [])
+  }))
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <Header/>
@@ -42,8 +75,8 @@ export async function Habits({ session }: { session: Session} ) {
             <CreateHabitDialog opened={habits.length === 0} />
           </div>
           <div className="grid gap-4">
-            {habits.sort((h1, h2) => h1.habitName < h2.habitName ? -1 : 1).map((habit: Habit) => (
-              <HabitCard habit={habit} key={habit.habitId}/>
+            {habitProps.sort((h1, h2) => h1.habitName < h2.habitName ? -1 : 1).map((prop: any) => (
+              <NewHabitCard {...prop} key={prop.habitId}/>
             ))}
           </div>
         </div>

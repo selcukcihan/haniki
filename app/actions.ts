@@ -20,10 +20,10 @@ export async function deleteHabit(habitId: string) {
   redirect('/')
 }
 
-export async function updateHabit(habitId: string, habitName: string) {
+export async function updateHabit(habitId: string, habitName: string, habitDescription?: string) {
   const session = await auth()
   if (session) {
-    await update(session.user?.id || '', habitId, habitName);
+    await update(session.user?.id || '', habitId, habitName, habitDescription);
   }
   redirect('/')
 }

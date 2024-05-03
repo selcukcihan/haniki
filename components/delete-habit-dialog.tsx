@@ -3,11 +3,8 @@
 import { Button } from "@/components/ui/button"
 import { DialogTrigger, DialogContent, Dialog, DialogClose } from "@/components/ui/dialog"
 import Link from "next/link"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import { deleteHabit } from "@/app/actions"
 import { MountainIcon } from "./icons"
-import { useState, useEffect } from 'react'
 import { Habit } from "../db"
 
 export function DeleteHabitDialog({ habit }: { habit: Habit }) {
@@ -40,26 +37,6 @@ export function DeleteHabitDialog({ habit }: { habit: Habit }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
-
-function PlusIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
-    </svg>
   )
 }
 

@@ -91,16 +91,17 @@ export const deleteHabit = async (userId: string, habitId: string) => {
   await docClient.send(command)
 }
 
-export const updateHabit = async (userId: string, habitId: string, habitName: string) => {
+export const updateHabit = async (userId: string, habitId: string, habitName: string, habitDescription?: string) => {
   const command = new UpdateCommand({
     TableName: process.env.DYNAMODB_TABLE_NAME || '',
     Key: {
       pk: `USER#${userId}`,
       sk: `HABIT#${habitId}`,
     },
-    UpdateExpression: "SET habitName = :habitName",
+    UpdateExpression: "SET habitName = :habitName" + (habitDescription ? ", habitDescription = :habitDescription" : ""),
     ExpressionAttributeValues: {
       ":habitName": habitName,
+      ...(habitDescription ? { ":habitDescription": habitDescription } : {}),
     },
   })
 

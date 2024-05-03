@@ -39,7 +39,7 @@ export function EditHabitDialog({ habit }: { habit: Habit }) {
     <Dialog>
       <DialogTrigger asChild>
         <Button className="flex items-center gap-2" variant="primary">
-        <FileEditIcon className="h-5 w-5" />
+          <FileEditIcon className="h-5 w-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-md mx-auto p-4 md:p-10">
@@ -51,12 +51,16 @@ export function EditHabitDialog({ habit }: { habit: Habit }) {
             </Link>
           </header>
           <main className="flex-1 bg-gray-100 dark:bg-gray-800 p-4 md:p-10 flex items-center justify-center">
-            <form action={(formData: FormData) => updateHabit(habit.habitId, formData.get("habitName") as string ) } >
+            <form action={(formData: FormData) => updateHabit(habit.habitId, formData.get("habitName") as string, formData.get("habitDescription") as string ) } >
               <div className="space-y-4">
                 <h1 className="text-3xl font-bold">Edit habit</h1>
                 <div className="space-y-2">
                   <Label htmlFor="habitName">Habit Name</Label>
                   <Input id="habitName" minLength={1} type="text" required={true} name="habitName" placeholder={habit.habitName} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="habitDescription">Description</Label>
+                  <Input id="habitDescription" type="text" required={true} name="habitDescription" placeholder="Describe your habit" />
                 </div>
                 <div className="flex">
                   <DialogClose type="submit">Update</DialogClose>
