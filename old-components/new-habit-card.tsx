@@ -20,7 +20,7 @@ To read more about using these font, please visit the Next.js documentation:
 - Pages Directory: https://nextjs.org/docs/pages/building-your-application/optimizing/fonts
 **/
 import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/old-components/ui/button"
 import { ResponsiveBar } from "@nivo/bar"
 
 export interface HabitProps {

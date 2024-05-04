@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand, DynamoDBDocumentClient, QueryCommand, DeleteCommand, UpdateCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, DynamoDBDocumentClient, QueryCommand, DeleteCommand, UpdateCommand, BatchWriteCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from 'uuid'
 
 const client = new DynamoDBClient({});
@@ -12,19 +12,34 @@ export interface Habit {
   logs?: string[];
 }
 
-export const logHabit = async (userId: string, habitId: string) => {
+export const switchToday = async (userId: string, habitId: string) => {
   const today = new Date().toISOString().split('T')[0]
-  const command = new PutCommand({
+  const existing = await docClient.send(new GetCommand({
     TableName: process.env.DYNAMODB_TABLE_NAME || '',
-    Item: {
+    Key: {
       pk: `USER#${userId}`,
       sk: `LOG#${habitId}#${today}`,
-      logDate: today,
     },
-  })
-
-  const response = await docClient.send(command)
-  return response
+  }))
+  console.log(existing)
+  if (existing.Item) {
+    await docClient.send(new DeleteCommand({
+      TableName: process.env.DYNAMODB_TABLE_NAME || '',
+      Key: {
+        pk: `USER#${userId}`,
+        sk: `LOG#${habitId}#${today}`,
+      },
+    }))
+  } else {
+    await docClient.send(new PutCommand({
+      TableName: process.env.DYNAMODB_TABLE_NAME || '',
+      Item: {
+        pk: `USER#${userId}`,
+        sk: `LOG#${habitId}#${today}`,
+        logDate: today,
+      },
+    }))
+  }
 }
 
 export const getLogsFull = async (userId: string, habitId: string) => {

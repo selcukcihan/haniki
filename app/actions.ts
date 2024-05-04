@@ -1,6 +1,6 @@
 'use server'
 
-import { createHabit as create, updateHabit as update, deleteHabit as deleteHabitRecord, logHabit as log } from "@/db"
+import { createHabit as create, updateHabit as update, deleteHabit as deleteHabitRecord, switchToday as log } from "@/db"
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 
@@ -28,7 +28,7 @@ export async function updateHabit(habitId: string, habitName: string, habitDescr
   redirect('/')
 }
 
-export async function logHabit(habitId: string) {
+export async function switchToday(habitId: string) {
   const session = await auth()
   if (session) {
     await log(session.user?.id || '', habitId)
