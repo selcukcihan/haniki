@@ -30,6 +30,11 @@ const calculateLast30DaysCount = (logs: string[]) => {
   return logs.filter((log) => new Date(log) > last30Days).length
 }
 
+const getShortMonthName = (month: number) => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return months[month]
+}
+
 const calculateMonthlyCounts = (logs: string[]) => {
   const monthlyCounts: { name: string, count: number }[] = []
   const today = new Date()
@@ -40,7 +45,7 @@ const calculateMonthlyCounts = (logs: string[]) => {
       const logDate = new Date(log)
       return logDate.getMonth() === month && logDate.getFullYear() === year
     })
-    monthlyCounts.push({ name: `${month + 1}/${year}`, count: monthLogs.length })
+    monthlyCounts.push({ name: getShortMonthName(month), count: monthLogs.length })
     month--
     if (month < 0) {
       month = 11
