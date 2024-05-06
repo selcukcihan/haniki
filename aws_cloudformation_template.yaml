@@ -1,0 +1,95 @@
+---
+Metadata:
+  TemplateId: "arn:aws:cloudformation:eu-west-1:692593327170:generatedTemplate/58cbc718-212f-4c3c-aeeb-96658a7d55d4"
+Resources:
+  DynamoDBTable00haniki00lyOqH:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::DynamoDB::Table"
+    DeletionPolicy: "Retain"
+    Properties:
+      SSESpecification:
+        SSEEnabled: false
+      ContributorInsightsSpecification:
+        Enabled: false
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      ProvisionedThroughput:
+        WriteCapacityUnits: 1
+        ReadCapacityUnits: 4
+      TableName: "haniki"
+      AttributeDefinitions:
+      - AttributeType: "S"
+        AttributeName: "GSI1PK"
+      - AttributeType: "S"
+        AttributeName: "GSI1SK"
+      - AttributeType: "S"
+        AttributeName: "pk"
+      - AttributeType: "S"
+        AttributeName: "sk"
+      BillingMode: "PROVISIONED"
+      GlobalSecondaryIndexes:
+      - IndexName: "GSI1"
+        Projection:
+          ProjectionType: "ALL"
+          NonKeyAttributes: []
+        ProvisionedThroughput:
+          WriteCapacityUnits: 1
+          ReadCapacityUnits: 2
+        KeySchema:
+        - KeyType: "HASH"
+          AttributeName: "GSI1PK"
+        - KeyType: "RANGE"
+          AttributeName: "GSI1SK"
+        ContributorInsightsSpecification:
+          Enabled: false
+      KeySchema:
+      - KeyType: "HASH"
+        AttributeName: "pk"
+      - KeyType: "RANGE"
+        AttributeName: "sk"
+      DeletionProtectionEnabled: false
+      TableClass: "STANDARD"
+      Tags: []
+      TimeToLiveSpecification:
+        Enabled: true
+        AttributeName: "expires"
+  IAMUser00haniki00jnDTn:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::User"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+      - Ref: "IAMManagedPolicy00policyhaniki007PD4I"
+      UserName: "haniki"
+  IAMManagedPolicy00policyhaniki007PD4I:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      ManagedPolicyName: "haniki"
+      Path: "/"
+      Description: ""
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Resource:
+          - "arn:aws:dynamodb:eu-west-1:692593327170:table/haniki"
+          - "arn:aws:dynamodb:eu-west-1:692593327170:table/haniki/index/GSI1"
+          Action:
+          - "dynamodb:BatchGetItem"
+          - "dynamodb:BatchWriteItem"
+          - "dynamodb:Describe*"
+          - "dynamodb:List*"
+          - "dynamodb:PutItem"
+          - "dynamodb:DeleteItem"
+          - "dynamodb:GetItem"
+          - "dynamodb:Scan"
+          - "dynamodb:Query"
+          - "dynamodb:UpdateItem"
+          Effect: "Allow"
+          Sid: "DynamoDBAccess"
+      Roles: []
+      Users:
+      - "haniki"

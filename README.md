@@ -1,6 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Habit Tracker
+
+You can view the app on https://habit.selcukcihan.com
+
+* This app was created using [v0.dev](https://v0.dev).
+* It uses nextjs and dynamodb.
+* It's hosted on vercel.
+
+## Preview
+
+![habit-screenshot](public/habit-screenshot.png)
+
+## Environment Variables
+
+You need to set the following env variables:
+
+```.env
+AUTH_SECRET={YOUR_SECRET_KEY_THAT_YOU_GENERATED}
+AUTH_GOOGLE_ID={YOUR_GOOGLE_ID}.apps.googleusercontent.com
+AUTH_GOOGLE_SECRET={YOUR_GOOGLE_SECRET}
+AUTH_DYNAMODB_ID={YOUR_AWS_ACCESS_KEY_ID}
+AWS_ACCESS_KEY_ID={YOUR_AWS_ACCESS_KEY_ID}
+AUTH_DYNAMODB_SECRET={YOUR_AWS_SECRET_ACCESS_KEY}
+AWS_SECRET_ACCESS_KEY={YOUR_AWS_SECRET_ACCESS_KEY}
+AWS_DEFAULT_REGION={YOUR_DYNAMODB_TABLE_REGION}
+AWS_REGION={YOUR_DYNAMODB_TABLE_REGION}
+AUTH_DYNAMODB_REGION={YOUR_DYNAMODB_TABLE_REGION}
+DYNAMODB_TABLE_NAME={YOUR_DYNAMODB_TABLE_NAME}
+```
+
+To run the app locally, you can put your env variables in `.env.local`
+
+## DynamoDB
+
+On AWS console I've created
+* a dynamodb table: stores user, session & habit data.
+* an IAM user with a managed policy attached to it that grants dynamodb access
+
+You can inspect the cloudformation template I've generated from my cloud resources: [aws_cloudformation_template.yaml](aws_cloudformation_template.yaml)
 
 ## Getting Started
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 First, run the development server:
 
