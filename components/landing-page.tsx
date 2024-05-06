@@ -51,7 +51,7 @@ export function LandingPage() {
   )
 }
 
-function ChromeIcon(props) {
+function ChromeIcon(props: any) {
   return (
     <svg
       {...props}
