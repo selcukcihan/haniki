@@ -97,13 +97,15 @@ export const deleteHabit = async (userId: string, habitId: string) => {
       },
     },
   })
-  const command = new BatchWriteCommand({
-    RequestItems: {
-      [process.env.DYNAMODB_TABLE_NAME || '']: requests,
-    },
-  })
+  for (let batch = requests.splice(0, 25); batch.length > 0; batch = requests.splice(0, 25)) {
+    const command = new BatchWriteCommand({
+      RequestItems: {
+        [process.env.DYNAMODB_TABLE_NAME || '']: batch,
+      },
+    })
 
-  await docClient.send(command)
+    await docClient.send(command)
+  }
 }
 
 export const updateHabit = async (userId: string, habitId: string, habitName: string, habitDescription?: string) => {
