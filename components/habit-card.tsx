@@ -20,7 +20,12 @@ export function HabitCard(props: any) {
     <Card>
       <CardHeader>
         <CardTitle>{props.habitName}</CardTitle>
-        <CardDescription>{props.habitDescription}</CardDescription>
+        <CardDescription className="text-gray-500 dark:text-gray-400">{props.habitDescription}</CardDescription>
+        {
+          props.last30DaysCount === 30
+            ? (<CardDescription className="text-green-600 dark:text-green-400">{"Congratulations, you haven't missed a day!"}</CardDescription>)
+            : (<CardDescription className="text-red-600 dark:text-red-400">{`You've skipped it ${30 - props.last30DaysCount} times in the past 30 days.`}</CardDescription>)
+        }
       </CardHeader>
       <CardContent>
         <BarChart {...props} className="aspect-[4/3] md:aspect-[8/3]" />
@@ -47,7 +52,7 @@ function BarChart(props: any) {
         indexBy="name"
         margin={{ top: 0, right: 0, bottom: 40, left: 40 }}
         padding={0.3}
-        colors={["#12372A"]} // color of the bar
+        colors={["#294B29"]} // color of the bar
         axisBottom={{
           tickSize: 0,
           tickPadding: 16,

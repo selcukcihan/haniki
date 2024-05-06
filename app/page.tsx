@@ -8,7 +8,7 @@ export default async function Home() {
     return (<Habits session={session}></Habits>)
   } else {
     return (
-      <LandingPage></LandingPage>
+      <LandingPage />
     )
   }
 }
